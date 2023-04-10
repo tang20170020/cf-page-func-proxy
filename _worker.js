@@ -1,12 +1,13 @@
 export default {
-    async fetch(request, env) {
-      let url = new URL(request.url);
-      if (url.pathname.startsWith('/')) {
-        url.hostname="api.openai.com";
-        let new_request=new Request(url,request);
-        return fetch(new_request);
-      }
-      // Otherwise, serve the static assets.
-      return env.ASSETS.fetch(request);
-    }
-  };
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    url.host = "api.openai.com";
+    // openai is already set all CORS heasders 
+    return fetch(url, {
+      headers: request.headers,
+      method: request.method,
+      body: request.body,
+      redirect: 'follow'
+    });
+  }
+}
